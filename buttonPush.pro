@@ -10,11 +10,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    gloweffect.cpp \
+    ledwidget.cpp \
     main.cpp \
-    dialog.cpp
+    dialog.cpp \
+    workerthread.cpp
 
 HEADERS += \
-    dialog.h
+    dialog.h \
+    gloweffect.h \
+    ledwidget.h \
+    workerthread.h
 
 FORMS += \
     dialog.ui
