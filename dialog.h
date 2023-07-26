@@ -24,7 +24,7 @@ public:
     void setProductId(quint16 a);
     bool isDesiredArduino(quint16 vendor_id, quint16 product_id);;
     bool readSerialData();
-        void changeStatusOfAll();
+    QSerialPort *arduino;
 
 private slots:
 
@@ -46,17 +46,23 @@ private slots:
 
 private:
     Ui::Dialog *ui;
-    QSerialPort *arduino;
     LedWidget* led1 ;
     LedWidget* led2 ;
     LedWidget* led3 ;
     LedWidget* led4 ;
+    LedWidget* led5 ;
     QTextCharFormat format;
     quint16 arduino_uno_vendor_id;
     quint16 arduino_uno_productID;
     QString arduino_port_name;
     bool arduino_is_available;
     bool desired_arduino;
+    QWaitCondition waitCondition;
+    QMutex mutex;
+signals:
+    void changeStatusOfAllSignal();
 
+private slots:
+    void changeStatusOfAll();
 };
 #endif // DIALOG_H

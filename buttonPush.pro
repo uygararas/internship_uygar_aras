@@ -13,14 +13,12 @@ SOURCES += \
     gloweffect.cpp \
     ledwidget.cpp \
     main.cpp \
-    dialog.cpp \
-    workerthread.cpp
+    dialog.cpp
 
 HEADERS += \
     dialog.h \
     gloweffect.h \
-    ledwidget.h \
-    workerthread.h
+    ledwidget.h
 
 FORMS += \
     dialog.ui

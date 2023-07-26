@@ -6,7 +6,7 @@
 
 LedWidget::LedWidget(const QString& name, QWidget *parent) : QWidget(parent), m_isOn(false)
 {
-    setFixedSize(100, 100); // Increase the size of the LED widget to allow more space for the name label
+    setFixedSize(80,80); // Increase the size of the LED widget to allow more space for the name label
 
     m_nameLabel = new QLabel(name); // Create the name label
     m_nameLabel->setAlignment(Qt::AlignCenter); // Center-align the name label

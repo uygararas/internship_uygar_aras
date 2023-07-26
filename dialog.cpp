@@ -1,4 +1,4 @@
-#include "dialog.h"
+ #include "dialog.h"
 #include "ui_dialog.h"
 #include "gloweffect.h"
 #include <QVBoxLayout>
@@ -30,16 +30,20 @@ Dialog::Dialog(QWidget *parent)
     led1 = new LedWidget("LED 1");
     led2 = new LedWidget("LED 2");
     led3 = new LedWidget("LED 3");
-    led4 = new LedWidget("LED 4"); // Add the 4th LED widget
+    led4 = new LedWidget("LED 4");
+    led5 = new LedWidget("LED 5"); // Add the 4th LED widget
     led1->setGraphicsEffect(glowEffect);
     led2->setGraphicsEffect(glowEffect);
     led3->setGraphicsEffect(glowEffect);
     led4->setGraphicsEffect(glowEffect);
+    led5->setGraphicsEffect(glowEffect);
 
     scene->addWidget(led1)->setPos(0, 0);
-    scene->addWidget(led2)->setPos(150, 0);
-    scene->addWidget(led3)->setPos(300, 0);
-    scene->addWidget(led4)->setPos(450, 0); // Add the 4th LED widget to the scene and adjust its position
+    scene->addWidget(led2)->setPos(100, 0);
+    scene->addWidget(led3)->setPos(200, 0);
+    scene->addWidget(led4)->setPos(300, 0); // Add the 4th LED widget to the scene and adjust its position
+    scene->addWidget(led5)->setPos(400, 0);
+
 
     ledLayout->addWidget(graphicsView);
     mainLayout->addLayout(ledLayout);
@@ -65,7 +69,7 @@ Dialog::Dialog(QWidget *parent)
     connect(button1, &QPushButton::released, this, &Dialog::on_pushButton_released);
     connect(button2, &QPushButton::pressed, this, &Dialog::on_pushButton_2_pressed);
     connect(button2, &QPushButton::released, this, &Dialog::on_pushButton_2_released);
-    connect(button3, &QPushButton::pressed, this, &Dialog::on_pushButton_3_released);
+    connect(button3, &QPushButton::pressed, this, &Dialog::on_pushButton_3_pressed);
     connect(button3, &QPushButton::released, this, &Dialog::on_pushButton_3_released);
     connect(button4, &QPushButton::pressed, this, &Dialog::on_pushButton_4_pressed);
     connect(button4, &QPushButton::released, this, &Dialog::on_pushButton_4_released);
@@ -118,6 +122,15 @@ Dialog::Dialog(QWidget *parent)
     if (receivedData.contains("ARDUINO")) {
         desired_arduino = true;
     }
+
+    connect(this, &Dialog::changeStatusOfAllSignal, this, &Dialog::changeStatusOfAll);
+
+    // Create a new thread and move the Dialog instance to that thread
+    QThread* workerThread = new QThread;
+    this->moveToThread(workerThread);
+
+    // Start the worker thread
+    workerThread->start();
 }
 
 void Dialog::setVendorId(quint16 a){
@@ -142,6 +155,8 @@ void Dialog::on_pushButton_pressed()
         arduino->write("ON1\n");
         qDebug() << "led 1 is on";
        //  led1->setLedState(true);
+        QMutexLocker locker(&mutex);
+        waitCondition.wakeAll();
     }
 }
 
@@ -153,6 +168,8 @@ void Dialog::on_pushButton_released()
         arduino->write("OFF1\n");
         qDebug() << "led 1 is off";
         // led1->setLedState(false);
+        QMutexLocker locker(&mutex);
+        waitCondition.wakeAll();
     }
 
 }
@@ -164,6 +181,8 @@ void Dialog::on_pushButton_2_pressed()
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON2\n");
         qDebug() << "led 2 is on";
+        QMutexLocker locker(&mutex);
+        waitCondition.wakeAll();
     }
 
 }
@@ -175,6 +194,8 @@ void Dialog::on_pushButton_2_released()
     if(arduino->isWritable() && desired_arduino){
         arduino->write("OFF2\n");
         qDebug() << "led 2 is off";
+        QMutexLocker locker(&mutex);
+        waitCondition.wakeAll();
     }
 
 }
@@ -183,9 +204,12 @@ void Dialog::on_pushButton_2_released()
 void Dialog::on_pushButton_3_pressed()
 {
        // changeStatusOfAll();
+
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON3\n");
         qDebug() << "led 3 is on";
+        QMutexLocker locker(&mutex);
+        waitCondition.wakeAll();
     }
 }
 
@@ -197,6 +221,8 @@ void Dialog::on_pushButton_3_released()
         arduino->write("OFF3\n");
         qDebug() << "led 3 is off";
     }
+    QMutexLocker locker(&mutex);
+    waitCondition.wakeAll();
 
 }
 
@@ -208,6 +234,8 @@ void Dialog::on_pushButton_4_pressed()
         arduino->write("ON4\n");
         qDebug() << "led 4 is on";
     }
+    QMutexLocker locker(&mutex);
+    waitCondition.wakeAll();
 
 }
 
@@ -218,34 +246,41 @@ void Dialog::on_pushButton_4_released()
         arduino->write("OFF4\n");
         qDebug() << "led 4 is off";
     }
+    QMutexLocker locker(&mutex);
+    waitCondition.wakeAll();
 }
 
-void Dialog::changeStatusOfAll(){
+void Dialog::changeStatusOfAll()
+{
     qDebug() << "here";
+    QMutexLocker locker(&mutex);
+    waitCondition.wait(&mutex);
     QByteArray s = arduino->readAll();
     qDebug() << s;
-    if(s.contains("HIGH1")){
+
+    if (s.contains("HIGH1")) {
         led1->setLedState(true);
-    }
-    else if(s.contains("LOW1")){
+    } else  {
         led1->setLedState(false);
     }
-    else if(s.contains("HIGH2")){
+
+    if (s.contains("HIGH2")) {
         led2->setLedState(true);
-    }
-    else if(s.contains("LOW2")){
+    } else  {
         led2->setLedState(false);
     }
-    else if(s.contains("HIGH3")){
+
+    if (s.contains("HIGH3")) {
         led3->setLedState(true);
-    }
-    else if(s.contains("LOW3")){
+    } else {
         led3->setLedState(false);
     }
-    else if(s.contains("HIGH4")){
+
+    if (s.contains("HIGH4")) {
         led4->setLedState(true);
-    }
-    else if(s.contains("LOW4")){
+    } else  {
         led4->setLedState(false);
     }
+
+    // Repeat the above pattern for led5 or other LEDs if applicable
 }
