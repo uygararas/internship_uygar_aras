@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     });
 
     // Set the interval for the QTimer (e.g., 1000 milliseconds = 1 second)
-    int interval = 100;
+    int interval = 40;
     timer.start(interval);
 
     return a.exec();

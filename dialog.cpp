@@ -155,8 +155,7 @@ void Dialog::on_pushButton_pressed()
         arduino->write("ON1\n");
         qDebug() << "led 1 is on";
        //  led1->setLedState(true);
-        QMutexLocker locker(&mutex);
-        waitCondition.wakeAll();
+
     }
 }
 
@@ -168,8 +167,6 @@ void Dialog::on_pushButton_released()
         arduino->write("OFF1\n");
         qDebug() << "led 1 is off";
         // led1->setLedState(false);
-        QMutexLocker locker(&mutex);
-        waitCondition.wakeAll();
     }
 
 }
@@ -181,8 +178,6 @@ void Dialog::on_pushButton_2_pressed()
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON2\n");
         qDebug() << "led 2 is on";
-        QMutexLocker locker(&mutex);
-        waitCondition.wakeAll();
     }
 
 }
@@ -194,8 +189,6 @@ void Dialog::on_pushButton_2_released()
     if(arduino->isWritable() && desired_arduino){
         arduino->write("OFF2\n");
         qDebug() << "led 2 is off";
-        QMutexLocker locker(&mutex);
-        waitCondition.wakeAll();
     }
 
 }
@@ -208,8 +201,6 @@ void Dialog::on_pushButton_3_pressed()
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON3\n");
         qDebug() << "led 3 is on";
-        QMutexLocker locker(&mutex);
-        waitCondition.wakeAll();
     }
 }
 
@@ -221,8 +212,6 @@ void Dialog::on_pushButton_3_released()
         arduino->write("OFF3\n");
         qDebug() << "led 3 is off";
     }
-    QMutexLocker locker(&mutex);
-    waitCondition.wakeAll();
 
 }
 
@@ -234,8 +223,6 @@ void Dialog::on_pushButton_4_pressed()
         arduino->write("ON4\n");
         qDebug() << "led 4 is on";
     }
-    QMutexLocker locker(&mutex);
-    waitCondition.wakeAll();
 
 }
 
@@ -246,17 +233,11 @@ void Dialog::on_pushButton_4_released()
         arduino->write("OFF4\n");
         qDebug() << "led 4 is off";
     }
-    QMutexLocker locker(&mutex);
-    waitCondition.wakeAll();
 }
 
 void Dialog::changeStatusOfAll()
 {
-    qDebug() << "here";
-    QMutexLocker locker(&mutex);
-    waitCondition.wait(&mutex);
     QByteArray s = arduino->readAll();
-    qDebug() << s;
 
     if (s.contains("HIGH1")) {
         led1->setLedState(true);
@@ -282,5 +263,4 @@ void Dialog::changeStatusOfAll()
         led4->setLedState(false);
     }
 
-    // Repeat the above pattern for led5 or other LEDs if applicable
 }

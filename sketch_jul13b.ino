@@ -1,4 +1,4 @@
-const int LED_PIN = 2;    // Pin number connected to the first LED
+const int LED_PIN = 2;  
 const int LED_PIN2 = 3;   // Pin number connected to the second LED
 const int LED_PIN3 = 4;   // Pin number connected to the third LED
 const int LED_PIN4 = 5;   // Pin number connected to the fourth LED
@@ -11,48 +11,33 @@ void setup() {
   
   Serial.begin(9600);         // Start serial communication
 }
-
 void loop() {
+  // Print the status of each LED
+  Serial.print(digitalRead(LED_PIN) == HIGH ? "HIGH1" : "LOW1");
+  Serial.print(digitalRead(LED_PIN2) == HIGH ? "HIGH2" : "LOW2");
+  Serial.print(digitalRead(LED_PIN3) == HIGH ? "HIGH3" : "LOW3");
+  Serial.println(digitalRead(LED_PIN4) == HIGH ? "HIGH4" : "LOW4");
+
   while (Serial.available()) {
     String incomingString = Serial.readStringUntil('\n');
     incomingString.trim();
 
     if (incomingString.equals("ON1")) {
-      Serial.print("HIGH1");
-      digitalWrite(LED_PIN, HIGH);   // Turn on the first LED
+      digitalWrite(LED_PIN, HIGH); // Turn ON LED
     } else if (incomingString.equals("OFF1")) {
-      Serial.print("LOW1");
-      digitalWrite(LED_PIN, LOW);
+      digitalWrite(LED_PIN, LOW);  // Turn OFF LED
     } else if (incomingString.equals("ON2")) {
-      Serial.print("HIGH2");
-      digitalWrite(LED_PIN2, HIGH);  // Turn on the second LED
-
+      digitalWrite(LED_PIN2, HIGH); // Turn ON LED
     } else if (incomingString.equals("OFF2")) {
-      Serial.print("LOW2");
-      digitalWrite(LED_PIN2, LOW);   // Turn off the second LED
-  
+      digitalWrite(LED_PIN2, LOW);  // Turn OFF LED
     } else if (incomingString.equals("ON3")) {
-      Serial.print("HIGH3");
-      digitalWrite(LED_PIN3, HIGH);  // Turn on the third LED
-
+      digitalWrite(LED_PIN3, HIGH); // Turn ON LED
     } else if (incomingString.equals("OFF3")) {
-      Serial.print("LOW3");
-      digitalWrite(LED_PIN3, LOW);   // Turn off the third LED
-
+      digitalWrite(LED_PIN3, LOW);  // Turn OFF LED
     } else if (incomingString.equals("ON4")) {
-      Serial.print("HIGH4");
-      digitalWrite(LED_PIN4, HIGH);  // Turn on the fourth LED
-
+      digitalWrite(LED_PIN4, HIGH); // Turn ON LED
     } else if (incomingString.equals("OFF4")) {
-      Serial.print("LOW4");
-      digitalWrite(LED_PIN4, LOW);   // Turn off the fourth LED
-
-    }
-    else{
-      Serial.print("LOW4");
-      Serial.print("LOW3");
-      Serial.print("LOW2");
-      Serial.print("LOW1");
+      digitalWrite(LED_PIN4, LOW);  // Turn OFF LED
     }
   }
 }
