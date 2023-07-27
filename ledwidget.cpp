@@ -1,20 +1,11 @@
-// ledwidget.cpp
 #include "ledwidget.h"
 #include <QPainter>
-#include <QVBoxLayout>
-#include <QLabel>
+#include <QStyleOptionFocusRect> // Include this for handling focus rectangle
 
-LedWidget::LedWidget(const QString& name, QWidget *parent) : QWidget(parent), m_isOn(false)
+LedWidget::LedWidget(const QString& name, QWidget* parent) : QWidget(parent), m_name(name), m_isOn(false)
 {
-    setFixedSize(80,80); // Increase the size of the LED widget to allow more space for the name label
-
-    m_nameLabel = new QLabel(name); // Create the name label
-    m_nameLabel->setAlignment(Qt::AlignCenter); // Center-align the name label
-
-    QVBoxLayout* layout = new QVBoxLayout;
-    layout->addWidget(m_nameLabel);
-    setLayout(layout); // Set the layout with the name label
-
+    setFixedSize(20, 20); // Set the fixed size for the LED widget
+    setFocusPolicy(Qt::NoFocus); // Set the focus policy to NoFocus to remove the focus rectangle
     setLedState(m_isOn); // Update the LED state and appearance
 }
 
@@ -24,18 +15,21 @@ void LedWidget::setLedState(bool isOn)
     update(); // Update the widget appearance
 }
 
-void LedWidget::paintEvent(QPaintEvent *event)
+void LedWidget::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
 
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::Antialiasing, true);
 
-    if (m_isOn)
-        painter.setBrush(QColor(0, 255, 0)); // Set the LED color to green when on
-    else
-        painter.setBrush(QColor(255, 0, 0)); // Set the LED color to red when off
+    // Create a gradient to give the LED a 3D effect
+    QRadialGradient gradient(rect().center(), rect().width() / 2, rect().center());
+    gradient.setColorAt(0, QColor(0, m_isOn ? 225 : 50, 0)); // Center color (light green when on, dark green when off)
+    gradient.setColorAt(1, QColor(0, m_isOn ? 170 : 10, 0));  // Outer color (darker green when on, even darker when off)
 
-    // Adjust the ellipse position to leave space for the name label
-    painter.drawEllipse(rect().adjusted(2, 20, -2, -2));
+    painter.setBrush(gradient);
+    painter.setPen(Qt::NoPen); // No border
+    painter.drawEllipse(rect());
+
+    // You can also add additional visual elements, such as a border or light glow effect.
 }

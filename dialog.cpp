@@ -15,8 +15,8 @@ Dialog::Dialog(QWidget *parent)
     desired_arduino = true;
     arduino_port_name = "";
 
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    QHBoxLayout *ledLayout = new QHBoxLayout;
     QGraphicsView *graphicsView = new QGraphicsView(this);
     QGraphicsScene *scene = new QGraphicsScene;
 
@@ -24,9 +24,10 @@ Dialog::Dialog(QWidget *parent)
     scene->setSceneRect(0, 0, 700, 200); // Each LED is 60x60, so total width is 240
 
     graphicsView->setScene(scene);
+    graphicsView->setStyleSheet("background: transparent;");
     GlowEffect *glowEffect = new GlowEffect;
 
-    // Create and add the LED widgets with names to the scene
+    // Create and add the LED widgets to the scene
     led1 = new LedWidget("LED 1");
     led2 = new LedWidget("LED 2");
     led3 = new LedWidget("LED 3");
@@ -38,29 +39,58 @@ Dialog::Dialog(QWidget *parent)
     led4->setGraphicsEffect(glowEffect);
     led5->setGraphicsEffect(glowEffect);
 
-    scene->addWidget(led1)->setPos(0, 0);
-    scene->addWidget(led2)->setPos(100, 0);
-    scene->addWidget(led3)->setPos(200, 0);
-    scene->addWidget(led4)->setPos(300, 0); // Add the 4th LED widget to the scene and adjust its position
-    scene->addWidget(led5)->setPos(400, 0);
+    scene->addWidget(led1)->setPos(40, 0);
+    scene->addWidget(led2)->setPos(240, 0);
+    scene->addWidget(led3)->setPos(445, 0);
+    scene->addWidget(led4)->setPos(650, 0);
+    scene->addWidget(led5)->setPos(420, 0);
 
+    QHBoxLayout *nameLabelsLayout = new QHBoxLayout; // Create the QHBoxLayout for name labels
+    QLabel *nameLabel1 = new QLabel("LED 1");
+    QLabel *nameLabel2 = new QLabel("LED 2");
+    QLabel *nameLabel3 = new QLabel("LED 3");
+    QLabel *nameLabel4 = new QLabel("LED 4");
 
-    ledLayout->addWidget(graphicsView);
-    mainLayout->addLayout(ledLayout);
+    nameLabel1->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    nameLabel2->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    nameLabel3->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    nameLabel4->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+
+    // Add the name labels to the layout
+    nameLabelsLayout->addWidget(nameLabel1);
+    nameLabelsLayout->addWidget(nameLabel2);
+    nameLabelsLayout->addWidget(nameLabel3);
+    nameLabelsLayout->addWidget(nameLabel4);
+
+    mainLayout->addLayout(nameLabelsLayout); // Add the name labels layout under the LEDs
+    mainLayout->addWidget(graphicsView); // Add the LEDs to the main layout
 
     // The rest of your button creation and connection code...
-
     QPushButton *button1 = new QPushButton("Button 1");
     QPushButton *button2 = new QPushButton("Button 2");
     QPushButton *button3 = new QPushButton("Button 3");
     QPushButton *button4 = new QPushButton("Button 4");
 
+    QString buttonStyle = "QPushButton {"
+                          "background-color: #0000ff;"
+                          "border: none;"
+                          "color: white;"
+                          "padding: 8px 16px;"
+                          "border-radius: 4px;"
+                          "}"
+                          "QPushButton:hover {"
+                          "background-color: #ff00008B;"
+                          "}";
+
+    button1->setStyleSheet(buttonStyle);
+    button2->setStyleSheet(buttonStyle);
+    button3->setStyleSheet(buttonStyle);
+    button4->setStyleSheet(buttonStyle);
 
     mainLayout->addWidget(button1);
     mainLayout->addWidget(button2);
     mainLayout->addWidget(button3);
     mainLayout->addWidget(button4);
-
 
     setLayout(mainLayout);
 
@@ -74,6 +104,7 @@ Dialog::Dialog(QWidget *parent)
     connect(button4, &QPushButton::pressed, this, &Dialog::on_pushButton_4_pressed);
     connect(button4, &QPushButton::released, this, &Dialog::on_pushButton_4_released);
 
+    // The rest of your code...
 
 
     qDebug() << "Number of Ports:" << QSerialPortInfo::availablePorts().length();
@@ -131,6 +162,7 @@ Dialog::Dialog(QWidget *parent)
 
     // Start the worker thread
     workerThread->start();
+    setWindowTitle("LED Control Panel");
 }
 
 void Dialog::setVendorId(quint16 a){
@@ -241,25 +273,25 @@ void Dialog::changeStatusOfAll()
 
     if (s.contains("HIGH1")) {
         led1->setLedState(true);
-    } else  {
+    } else if(s.contains("LOW1")) {
         led1->setLedState(false);
     }
 
     if (s.contains("HIGH2")) {
         led2->setLedState(true);
-    } else  {
+    } else if(s.contains("LOW2")) {
         led2->setLedState(false);
     }
 
     if (s.contains("HIGH3")) {
         led3->setLedState(true);
-    } else {
+    } else if (s.contains("LOW3")) {
         led3->setLedState(false);
     }
 
     if (s.contains("HIGH4")) {
         led4->setLedState(true);
-    } else  {
+    } else if (s.contains("LOW4")) {
         led4->setLedState(false);
     }
 
