@@ -185,7 +185,7 @@ void Dialog::on_pushButton_pressed()
       //  changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON1\n");
-        qDebug() << "led 1 is on";
+      //  qDebug() << "led 1 is on";
        //  led1->setLedState(true);
 
     }
@@ -197,7 +197,7 @@ void Dialog::on_pushButton_released()
       //  changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("OFF1\n");
-        qDebug() << "led 1 is off";
+       // qDebug() << "led 1 is off";
         // led1->setLedState(false);
     }
 
@@ -209,7 +209,7 @@ void Dialog::on_pushButton_2_pressed()
      //   changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON2\n");
-        qDebug() << "led 2 is on";
+       // qDebug() << "led 2 is on";
     }
 
 }
@@ -220,7 +220,7 @@ void Dialog::on_pushButton_2_released()
        // changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("OFF2\n");
-        qDebug() << "led 2 is off";
+      //  qDebug() << "led 2 is off";
     }
 
 }
@@ -232,7 +232,7 @@ void Dialog::on_pushButton_3_pressed()
 
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON3\n");
-        qDebug() << "led 3 is on";
+      //  qDebug() << "led 3 is on";
     }
 }
 
@@ -242,7 +242,7 @@ void Dialog::on_pushButton_3_released()
        // changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("OFF3\n");
-        qDebug() << "led 3 is off";
+      //  qDebug() << "led 3 is off";
     }
 
 }
@@ -253,7 +253,7 @@ void Dialog::on_pushButton_4_pressed()
         //changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("ON4\n");
-        qDebug() << "led 4 is on";
+      //  qDebug() << "led 4 is on";
     }
 
 }
@@ -263,7 +263,7 @@ void Dialog::on_pushButton_4_released()
     //changeStatusOfAll();
     if(arduino->isWritable() && desired_arduino){
         arduino->write("OFF4\n");
-        qDebug() << "led 4 is off";
+      //  qDebug() << "led 4 is off";
     }
 }
 
