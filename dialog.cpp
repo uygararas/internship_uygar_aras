@@ -21,7 +21,7 @@ Dialog::Dialog(QWidget *parent)
     QGraphicsScene *scene = new QGraphicsScene;
 
     // Set the scene size to accommodate all four LEDs
-    scene->setSceneRect(0, 0, 700, 200); // Each LED is 60x60, so total width is 240
+    scene->setSceneRect(0, 0, 700, 50); // Each LED is 60x60, so total width is 240
 
     graphicsView->setScene(scene);
     graphicsView->setStyleSheet("background: transparent;");
@@ -51,6 +51,9 @@ Dialog::Dialog(QWidget *parent)
     QLabel *nameLabel3 = new QLabel("LED 3");
     QLabel *nameLabel4 = new QLabel("LED 4");
 
+    nameLabelsLayout->setContentsMargins(0, 0, 0, 0); // Adjust top margin as needed
+    nameLabelsLayout->setSpacing(10); // Adjust spacing as needed
+
     nameLabel1->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     nameLabel2->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     nameLabel3->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
@@ -66,11 +69,23 @@ Dialog::Dialog(QWidget *parent)
     mainLayout->addWidget(graphicsView); // Add the LEDs to the main layout
 
     // The rest of your button creation and connection code...
+    QHBoxLayout *rowLayout1 = new QHBoxLayout;
     QPushButton *button1 = new QPushButton("Button 1");
+    button1->setFixedSize(300,100);
     QPushButton *button2 = new QPushButton("Button 2");
-    QPushButton *button3 = new QPushButton("Button 3");
-    QPushButton *button4 = new QPushButton("Button 4");
+    button2->setFixedSize(300,100);
+    rowLayout1->addWidget(button1);
+    rowLayout1->addWidget(button2);
 
+    // Create the second row layout
+    QHBoxLayout *rowLayout2 = new QHBoxLayout;
+    QPushButton *button3 = new QPushButton("Button 3");
+    button3->setFixedSize(300,100);
+    QPushButton *button4 = new QPushButton("Button 4");
+    button4->setFixedSize(300,100);
+    rowLayout2->addWidget(button3);
+    rowLayout2->addWidget(button4);
+    // Apply button styles
     QString buttonStyle = "QPushButton {"
                           "background-color: #0000ff;"
                           "border: none;"
@@ -87,11 +102,9 @@ Dialog::Dialog(QWidget *parent)
     button3->setStyleSheet(buttonStyle);
     button4->setStyleSheet(buttonStyle);
 
-    mainLayout->addWidget(button1);
-    mainLayout->addWidget(button2);
-    mainLayout->addWidget(button3);
-    mainLayout->addWidget(button4);
-
+    // Add row layouts to the main layout
+    mainLayout->addLayout(rowLayout1);
+    mainLayout->addLayout(rowLayout2);
     setLayout(mainLayout);
 
     // Connect button pressed and released signals to custom slots
